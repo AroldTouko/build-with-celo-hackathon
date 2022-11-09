@@ -74,6 +74,12 @@ contract ROSCA {
         uint paymentDateAndTime;
     }
 
+    struct FoodOrderList {
+        uint foodOrderListId;
+        uint tontineId;
+    }
+
+
     //mapping to track the differents structs
     mapping (uint => Tontine ) internal tontines;
     mapping (uint => Group) internal groups;
@@ -87,6 +93,16 @@ contract ROSCA {
     mapping (uint => uint) groupMembers;
     mapping (uint => uint) tontineCotisations;
     mapping (uint => uint) paymentForMemberCotisations;
+
+    //mapping for linking a list of members food order to a tontine
+    mapping (uint => FoodOrderList) foodOrderLists;
+    //mapping a food orderList to a tontine;
+    mapping (uint => uint) tontineFoodOrderList;
+    //mapping a food order list to a mapping which map a food order to a member
+    mapping (uint => mapping(uint => uint)) membersFoodOrder;
+
+    
+    
     
 
     //creating a tontine with its name, amount to pay each period and the amount of time in a cotisation period
@@ -207,7 +223,12 @@ contract ROSCA {
     }
 
     //This function should pay the total cotisation amount to a designated beneficiary
-    function payTheBeneficiary(uint _cotisationId) public payable {
+    function payTheBeneficiary(uint _cotisationId, address payable _beneficiaryAddress) public payable {
+        IERC20Token(cUsdTokenAddress).transferFrom(
+            address(this),
+            _beneficiaryAddress,
+            2
+          );
 
     }
     // a specific function to get the tontine's contribution amount knowing the member cotisation identifier
